@@ -4,13 +4,27 @@
 import pygame
 from constants import *
 from player import *
+from circleshape import *
+from asteroidfield import *
+from asteroid import *
 
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
     dt = 0
+
+    # CREATING OBJECTS IN GAME
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+    Asteroids = pygame.sprite.Group()
+    Asteroid.containers = (updatable, drawable, Asteroids)
+    AsteroidField.containers = (updatable)
+    Asteroid_Field = AsteroidField()
+    Player.containers = (updatable, drawable)
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT/2)
+    # CREATING OBJECTS IN GAME
+
     print("Starting asteroids!")
     print(f"Screen width: {SCREEN_WIDTH}")
     print(f"Screen height: {SCREEN_HEIGHT}")
@@ -19,9 +33,11 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
-        pygame.Surface.fill(screen,(0,0,0))
-        player.draw(screen)
-        player.update(dt)
+        pygame.Surface.fill(screen, "black")
+        for draw in drawable:
+            draw.draw(screen)
+        for update in updatable:
+            update.update(dt)
         pygame.display.flip()
         dt = clock.tick(60)/1000 
 
