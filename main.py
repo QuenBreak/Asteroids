@@ -42,6 +42,11 @@ def main():
         for a in Asteroids:
             if player.collision_check(a):
                 sys.exit("Game Over!")
+        for a in Asteroids:
+            for b in Shots:  
+                if a.collision_check(b):
+                     pygame.sprite.Sprite.kill(a)
+                     pygame.sprite.Sprite.kill(b)
         pygame.display.flip()
         dt = clock.tick(60)/1000 
 
