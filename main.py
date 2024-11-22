@@ -45,10 +45,10 @@ def main():
         for a in Asteroids:
             for b in Shots:  
                 if a.collision_check(b):
-                     pygame.sprite.Sprite.kill(a)
+                     a.split()
                      pygame.sprite.Sprite.kill(b)
         pygame.display.flip()
-        dt = clock.tick(60)/1000 
+        dt = clock.tick(100)/1000 
 
 if __name__ == "__main__":
     main()
