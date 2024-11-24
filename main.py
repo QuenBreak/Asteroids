@@ -8,12 +8,14 @@ from player import *
 from circleshape import *
 from asteroidfield import *
 from asteroid import *
+from text import Text_Box
 
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
     dt = 0
+    in_out = True
 
     # CREATING OBJECTS IN GAME
     # Containers
@@ -25,13 +27,38 @@ def main():
     AsteroidField.containers = (updatable)
     Player.containers = (updatable, drawable)
     Shot.containers = (updatable, drawable, Shots)
+    Starting_Menu = Text_Box("freesansbold.ttf", 26, STARTING_TEXT, "white")
     Asteroid_Field = AsteroidField()
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT/2)
-    # CREATING OBJECTS IN GAME
+
+    pygame.display.toggle_fullscreen()
+    
+    #Start Menu
+    while in_out == True :
+        keys = pygame.key.get_pressed()
+        Starting_Menu.show_text( screen, "black")
+        if keys[pygame.K_END]:
+            sys.exit(f"""
+                Goodbye Thanks For Playing!
+                """)
+        if keys[pygame.K_SPACE]:
+            in_out = False
+        if keys[pygame.K_F11]:
+            pygame.display.toggle_fullscreen()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                # deactivates the pygame library
+                pygame.quit()
+                # quit the program.
+                quit()
+ 
+        # Draws the surface object to the screen.
+        pygame.display.update()
+
 
     # GAMEPLAY LOOP
-    pygame.display.toggle_fullscreen()
-    while True:
+    in_out = True
+    while in_out == True :
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
@@ -43,13 +70,47 @@ def main():
         for a in Asteroids:
             if player.collision_check(a):
                 player.death_check()
+                if player.lives <= 0:
+                    in_out = False
             for b in Shots:  
                 if a.collision_check(b):
                     player.score += a.score
+                    if a.value == 1:   
+                        Asteroid_Field.num_as -= 1
                     a.split()
                     pygame.sprite.Sprite.kill(b)
         pygame.display.flip()
         dt = clock.tick(60)/1000 
+    
+    #Game Over Screen
+    in_out = True
+    #Game Over Screen has to go after player so it can use player objects
+    Game_Over_Screen = Text_Box("freesansbold.ttf", 26, ENDING_TEXT(player.score) , "white")
+    while in_out == True :
+        keys = pygame.key.get_pressed()
+        Game_Over_Screen.show_text( screen, "black")
+        if keys[pygame.K_END]:
+            sys.exit(f"""
+                Goodbye Thanks For Playing!
+                """)
+        if keys[pygame.K_SPACE]:
+            in_out = False
+        for event in pygame.event.get():
+ 
+            # if event object type is QUIT
+            # then quitting the pygame
+            # and program both.
+            if event.type == pygame.QUIT:
+ 
+                # deactivates the pygame library
+                pygame.quit()
+ 
+                # quit the program.
+                quit()
+ 
+        # Draws the surface object to the screen.
+        pygame.display.update()
+
 
 if __name__ == "__main__":
     main()
